@@ -1,11 +1,10 @@
  
 import mongoose from 'mongoose'; 
-import { MONGO_URI } from '../config';
 
 export default async() => {
 
     try {
-        await mongoose.connect(MONGO_URI, {
+        await mongoose.connect('mongodb+srv://iamserag:iamserag123456789@cluster0.kelyj7l.mongodb.net/Food_Delivery?retryWrites=true&w=majority', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true

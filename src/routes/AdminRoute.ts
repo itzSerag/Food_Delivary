@@ -1,30 +1,29 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { CreateVandor, GetDeliveryUsers, GetTransactionById, GetTransactions, 
-        GetVandorByID, GetVanndors, VerifyDeliveryUser } from '../controllers';
-
+import express, { Request, Response, NextFunction } from "express";
+import {
+  CreateVendor,
+  GetDeliveryUsers,
+  GetTransactionById,
+  GetTransactions,
+  GetVendorByID,
+  GetVendors,
+  VerifyDeliveryUser,
+} from "../controllers";
 
 const router = express.Router();
 
-router.post('/vendor', CreateVandor)
+router.post("/vendor", CreateVendor);
 
-router.get('/vendors', GetVanndors)
-router.get('/vendor/:id', GetVandorByID)
+router.get("/vendors", GetVendors);
+router.get("/vendor/:id", GetVendorByID);
 
+router.get("/transactions", GetTransactions);
+router.get("/transaction/:id", GetTransactionById);
 
-router.get('/transactions', GetTransactions)
-router.get('/transaction/:id', GetTransactionById)
+router.put("/delivery/verify", VerifyDeliveryUser);
+router.get("/delivery/users", GetDeliveryUsers);
 
-router.put('/delivery/verify', VerifyDeliveryUser)
-router.get('/delivery/users', GetDeliveryUsers);
-
-
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-
-
-        res.json({ message: "Hello from  Admin"})
-
-})
-
-
+router.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.json({ message: "Hello from  Admin" });
+});
 
 export { router as AdminRoute };

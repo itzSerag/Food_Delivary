@@ -5,7 +5,7 @@ import { Offer } from '../models/Offer';
 
 const router = express.Router();
 
-/* ------------------- Suignup / Create Customer --------------------- */
+/* ------------------- Signup / Create Customer --------------------- */
 router.post('/signup', CustomerSignUp)
 
 /* ------------------- Login --------------------- */

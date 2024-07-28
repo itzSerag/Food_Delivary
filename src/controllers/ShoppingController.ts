@@ -1,12 +1,13 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { FoodDoc, Vendor } from '../models';
 import { Offer } from '../models/Offer';
 
 export const GetFoodAvailability = async (req: Request, res: Response, next: NextFunction) => {
 
     const pincode = req.params.pincode;
-    
-    const result = await Vendor.find({ pincode: pincode, serviceAvailable: true}).sort([['rating', 'descending']]).populate('foods')
+    const result = await Vendor.find({ pincode: pincode, serviceAvailable: true})
+                                .sort([['rating', 'descending']])
+                                .populate('foods')
 
     if(result.length > 0){
         return res.status(200).json(result);
@@ -29,11 +30,14 @@ export const GetTopRestaurants = async (req: Request, res: Response, next: NextF
     return res.status(404).json({ msg: 'data Not found!'});
 }
 
+
+
 export const GetFoodsIn30Min = async (req: Request, res: Response, next: NextFunction) => {
 
     const pincode = req.params.pincode;
-    
-    const result = await Vendor.find({ pincode: pincode, serviceAvailable: true}).sort([['rating', 'descending']]).populate('foods');
+    const result = await Vendor.find({ pincode: pincode, serviceAvailable: true})
+                                .sort([['rating', 'descending']])
+                                .populate('foods');
  
     if(result.length > 0){
         let foodResult: any = [];
@@ -51,7 +55,7 @@ export const SearchFoods = async (req: Request, res: Response, next: NextFunctio
 
     const pincode = req.params.pincode;
     const result = await Vendor.find({ pincode: pincode, serviceAvailable: true})
-    .populate('foods');
+                                .populate('foods');
  
     if(result.length > 0){
         let foodResult: any = [];
@@ -61,8 +65,8 @@ export const SearchFoods = async (req: Request, res: Response, next: NextFunctio
     return res.status(404).json({ msg: 'data Not found!'});
 }
 
-export const RestaurantById = async (req: Request, res: Response, next: NextFunction) => {
 
+export const RestaurantById = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     
     const result = await Vendor.findById(id).populate('foods')

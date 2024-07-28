@@ -1,11 +1,16 @@
 import express from 'express';
-import App from './services/ExpressApp';
-import dbConnection from './services/Database';
-import "reflect-metadata";
+import 'dotenv/config';
 
-const PORT = process.env.PORT;
+import App from './ExpressApp';
+import dbConnection from './services/Database';
+
+const PORT = 3000;
 
 const bootstrap = async () => {
+
+    console.log('Starting the server');
+    console.log('Connecting to the database' , process.env.MONGO_URI);
+    
 
     const app = express();
 
@@ -13,8 +18,8 @@ const bootstrap = async () => {
 
     await App(app);
 
-    app.listen(PORT || 8000, () => {
-        console.log(`Listening to port 8000 ${PORT}`);
+    app.listen(PORT, () => {
+        console.log(`Listening to port 3000 ${PORT}`);
     })
 }
 

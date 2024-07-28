@@ -1,18 +1,20 @@
-import express , { Application } from 'express';
+import express , { Application, Request, Response } from 'express';
 import path from 'path';
 
-import {AdminRoute, DeliveryRoute, VandorRoute} from '../routes'
-import { CustomerRoute } from '../routes/CustomerRoute';
-import { ShoppingRoute } from '../routes/ShoppingRoutes';
+import {AdminRoute, DeliveryRoute, VandorRoute} from './routes'
+import { CustomerRoute } from './routes/CustomerRoute';
+import { ShoppingRoute } from './routes/ShoppingRoutes';
  
 
 export default async(app: Application) => {
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true}))
-    
-    app.use(express.json());
- 
+
+    app.use('/' , (req : Request, res : Response)=>{
+        res.send("Welcome to Food Delivery App")
+    })
+
     const imagePath = path.join(__dirname,'../images');
     
     app.use('/images', express.static(imagePath));

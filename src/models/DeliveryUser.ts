@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
-import { OrderDoc } from './Order';
+import mongoose, { Schema, Document } from 'mongoose';
 
 
 interface DeliveryUserDoc extends Document {
@@ -42,14 +41,11 @@ const DeliveryUserSchema = new Schema({
             delete ret.password;
             delete ret.salt;
             delete ret.__v;
-            delete ret.createdAt;
-            delete ret.updatedAt;
 
         }
     },
     timestamps: true
 });
-
 
 const DeliveryUser = mongoose.model<DeliveryUserDoc>('deliveryUser', DeliveryUserSchema);
 

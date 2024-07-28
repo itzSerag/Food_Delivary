@@ -7,12 +7,16 @@ import {Customer, DeliveryUser, Food, Vendor} from '../models';
 import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
 import { Transaction } from '../models/Transaction';
-import { GenerateOtp, GeneratePassword, GenerateSalt, GenerateSignature, onRequestOTP, ValidatePassword } from '../utility';
+import { 
+    GenerateOtp, GeneratePassword, GenerateSalt, 
+    GenerateSignature, onRequestOTP, ValidatePassword 
+}  from '../utility';
+
+
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
     const customerInputs = plainToClass(CreateCustomerInput, req.body);
-
     const validationError = await validate(customerInputs, {validationError: { target: true}})
 
     if(validationError.length > 0){

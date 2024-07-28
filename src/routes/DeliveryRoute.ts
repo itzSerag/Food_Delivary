@@ -1,7 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
 import {
     DeliveryLogin,
-    DeliverySignUp, EditDeliveryProfile, GetDeliveryProfile, UpdateDeliveryUserStatus
+    DeliverySignUp,
+    EditDeliveryProfile,
+    GetDeliveryProfile,
+    UpdateDeliveryUserStatus,
 } from '../controllers';
 import { Authenticate } from '../middleware';
 import { Offer } from '../models/Offer';
@@ -9,10 +12,10 @@ import { Offer } from '../models/Offer';
 const router = express.Router();
 
 /* ------------------- Signup / Create Customer --------------------- */
-router.post('/signup', DeliverySignUp)
+router.post('/signup', DeliverySignUp);
 
 /* ------------------- Login --------------------- */
-router.post('/login', DeliveryLogin)
+router.post('/login', DeliveryLogin);
 
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
@@ -21,8 +24,7 @@ router.use(Authenticate);
 router.put('/change-status', UpdateDeliveryUserStatus);
 
 /* ------------------- Profile --------------------- */
-router.get('/profile', GetDeliveryProfile)
-router.patch('/profile', EditDeliveryProfile)
+router.get('/profile', GetDeliveryProfile);
+router.patch('/profile', EditDeliveryProfile);
 
-
-export { router as DeliveryRoute}
+export { router as DeliveryRoute };

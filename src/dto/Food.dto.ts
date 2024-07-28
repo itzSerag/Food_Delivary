@@ -1,9 +1,6 @@
-import {  } from "class-validator";
-
-
+import {} from 'class-validator';
 
 export class CreateFoodInput {
-
     name: string;
     description: string;
     category: string;

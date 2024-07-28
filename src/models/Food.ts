@@ -1,8 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-
 export interface FoodDoc extends Document {
-
     vendorId: string;
     name: string;
     description: string;
@@ -14,29 +12,28 @@ export interface FoodDoc extends Document {
     images: [string];
 }
 
-
-const FoodSchema = new Schema({
-
-
-    vendorId: { type: String, required: true},
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    category: { type: String},
-    foodType: { type: String, required: true},
-    readyTime: { type: Number},
-    price: {type: Number},
-    rating: {type: Number},
-    images: {type: [String]},
-},{
-    toJSON: {
-        transform(doc, ret){
-            delete ret.__v;
-        }
+const FoodSchema = new Schema(
+    {
+        vendorId: { type: String, required: true },
+        name: { type: String, required: true },
+        description: { type: String, required: true },
+        category: { type: String },
+        foodType: { type: String, required: true },
+        readyTime: { type: Number },
+        price: { type: Number },
+        rating: { type: Number },
+        images: { type: [String] },
     },
-    timestamps: true
-});
-
+    {
+        toJSON: {
+            transform(doc, ret) {
+                delete ret.__v;
+            },
+        },
+        timestamps: true,
+    },
+);
 
 const Food = mongoose.model<FoodDoc>('food', FoodSchema);
 
-export { Food }
+export { Food };

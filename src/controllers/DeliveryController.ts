@@ -46,11 +46,9 @@ export const DeliverySignUp = async (
     const existingDeliveryUser = await DeliveryUser.findOne({ email: email });
 
     if (existingDeliveryUser !== null) {
-        return res
-            .status(400)
-            .json({
-                message: 'A Delivery User exist with the provided email ID!',
-            });
+        return res.status(400).json({
+            message: 'A Delivery User exist with the provided email ID!',
+        });
     }
 
     const result = await DeliveryUser.create({
@@ -75,13 +73,11 @@ export const DeliverySignUp = async (
             verified: result.verified,
         });
         // Send the result
-        return res
-            .status(201)
-            .json({
-                signature,
-                verified: result.verified,
-                email: result.email,
-            });
+        return res.status(201).json({
+            signature,
+            verified: result.verified,
+            email: result.email,
+        });
     }
 
     return res.status(400).json({ msg: 'Error while creating Delivery user' });

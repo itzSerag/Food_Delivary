@@ -9,10 +9,6 @@ export default async (app: Application) => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    app.use('/', (req: Request, res: Response) => {
-        res.send('Welcome to Food Delivery App');
-    });
-
     const imagePath = path.join(__dirname, '../images');
 
     app.use('/images', express.static(imagePath));

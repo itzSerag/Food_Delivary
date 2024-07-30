@@ -27,65 +27,71 @@ export const CustomerSignUp = async (
     res: Response,
     next: NextFunction,
 ) => {
-    const customerInputs = plainToClass(CreateCustomerInput, req.body);
-    const validationError = await validate(customerInputs, {
-        validationError: { target: true },
-    });
-
-    if (validationError.length > 0) {
-        return res.status(400).json(validationError);
-    }
-
-    const { email, phone, password } = customerInputs;
-
-    const salt = await GenerateSalt();
-    const userPassword = await GeneratePassword(password, salt);
-
-    const { otp, expiry } = GenerateOtp();
-
-    const existingCustomer = await Customer.find({ email: email });
-
-    if (existingCustomer !== null) {
-        return res.status(400).json({ message: 'Email already exist!' });
-    }
-
-    const result = await Customer.create({
-        email: email,
-        password: userPassword,
-        salt: salt,
-        phone: phone,
-        otp: otp,
-        otp_expiry: expiry,
-        firstName: '',
-        lastName: '',
-        address: '',
-        verified: false,
-        lat: 0,
-        lng: 0,
-        orders: [],
-    });
-
-    if (result) {
-        // send OTP to customer
-        await onRequestOTP(otp, phone);
-
-        //Generate the Signature
-        const signature = await GenerateSignature({
-            _id: result._id,
-            email: result.email,
-            verified: result.verified,
+    try {
+        const customerInputs = plainToClass(CreateCustomerInput, req.body);
+        const validationErrors = await validate(customerInputs, {
+            validationError: { target: true },
         });
-        // Send the result
-        return res
-            .status(201)
-            .json({
+
+        if (validationErrors.length > 0) {
+            return res.status(400).json(validationErrors);
+        }
+
+        // phone number is now by defult sends to my mobile -
+        // for dev
+        const { email, password , phone } = customerInputs;
+
+        const salt = await GenerateSalt();
+        const userPassword = await GeneratePassword(password, salt);
+
+        const { otp, expiry } = GenerateOtp();
+
+        const existingCustomer = await Customer.findOne({ email: email });
+
+        if (existingCustomer) {
+            return res.status(400).json({ message: 'Email already exists!' });
+        }
+
+        const result = await Customer.create({
+            email: email,
+            password: userPassword,
+            salt: salt,
+            phone: phone,
+            otp: otp,
+            otp_expiry: expiry,
+            firstName: '',
+            lastName: '',
+            address: '',
+            verified: false,
+            lat: 0,
+            lng: 0,
+            orders: [],
+        });
+
+        if (result) {
+            // send OTP to customer
+            await onRequestOTP(otp);
+
+            //Generate the Signature
+            const signature = await GenerateSignature({
+                _id: result._id,
+                email: result.email,
+                verified: result.verified,
+            });
+
+            // Send the result
+            return res.status(201).json({
                 signature,
                 verified: result.verified,
                 email: result.email,
             });
-    }
+        }
 
-    return res.status(400).json({ msg: 'Error while creating user' });
+        return res.status(400).json({ msg: 'Error while creating user' });
+    } catch (error) {
+        console.error('Error during customer sign-up:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 };
 
 export const CustomerLogin = async (
@@ -127,7 +133,7 @@ export const CustomerLogin = async (
         }
     }
 
-    return res.json({ msg: 'Error With Signup' });
+    return res.json({ msg: 'Error With Login' });
 };
 
 export const CustomerVerify = async (
@@ -136,6 +142,7 @@ export const CustomerVerify = async (
     next: NextFunction,
 ) => {
     const { otp } = req.body;
+    // from user autherntication payload
     const customer = req.user;
 
     if (customer) {
@@ -183,7 +190,7 @@ export const RequestOtp = async (
             profile.otp_expiry = expiry;
 
             await profile.save();
-            const sendCode = await onRequestOTP(otp, profile.phone);
+            const sendCode = await onRequestOTP(otp);
 
             if (!sendCode) {
                 return res
@@ -191,11 +198,9 @@ export const RequestOtp = async (
                     .json({ message: 'Failed to verify your phone number' });
             }
 
-            return res
-                .status(200)
-                .json({
-                    message: 'OTP sent to your registered Mobile Number!',
-                });
+            return res.status(200).json({
+                message: 'OTP sent to your registered Mobile Number!',
+            });
         }
     }
 
@@ -211,6 +216,8 @@ export const GetCustomerProfile = async (
 
     if (customer) {
         const profile = await Customer.findById(customer._id);
+
+        // pass and salt already deleted from mongoose
 
         if (profile) {
             return res.status(201).json(profile);
@@ -260,6 +267,8 @@ const assignOrderForDelivery = async (orderId: string, vendorId: string) => {
     const vendor = await Vendor.findById(vendorId);
     if (vendor) {
         const areaCode = vendor.pincode;
+
+        // futhermore find the nearest delivery person by area code
         const vendorLat = vendor.lat;
         const vendorLng = vendor.lng;
 
@@ -279,11 +288,11 @@ const assignOrderForDelivery = async (orderId: string, vendorId: string) => {
                 await currentOrder.save();
 
                 //Notify to vendor for received new order firebase push notification
+                // stage #2
             }
         }
     }
 
-    // Update Delivery ID
 };
 
 /* ------------------- Order Section --------------------- */
@@ -554,6 +563,7 @@ export const CreatePayment = async (
         }
     }
     // perform payment gateway charge api
+    // if success create transaction record
 
     // create record on transaction
     const transaction = await Transaction.create({

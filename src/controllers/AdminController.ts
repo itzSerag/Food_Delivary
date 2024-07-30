@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateVendorInput } from '../dto';
-import { DeliveryUser, Vendor } from '../models';
+import { DeliveryUser, Vendor, Customer } from '../models';
 import { Transaction } from '../models/Transaction';
 import { GeneratePassword, GenerateSalt } from '../utility';
 
@@ -154,4 +154,34 @@ export const GetDeliveryUsers = async (
     }
 
     return res.json({ message: 'Unable to get Delivery Users' });
+};
+
+export const getCustomerById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { userId } = req.body;
+
+    const customer = Customer.findById(userId);
+
+    if (customer) {
+        return res.status(200).json(customer);
+    }
+
+    return res.json({ message: 'Customer data not available' });
+};
+
+export const getCustomers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const customers = Customer.find();
+
+    if (customers) {
+        return res.status(200).json(customers);
+    }
+
+    return res.json({ message: 'Customers data not available' });
 };

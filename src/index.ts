@@ -14,7 +14,6 @@ const bootstrap = async () => {
     const app = express();
 
     await dbConnection();
-    console.log('Connecting to the database', process.env.MONGO_URI);
 
     await App(app);
 
